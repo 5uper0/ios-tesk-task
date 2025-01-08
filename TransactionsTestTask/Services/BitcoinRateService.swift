@@ -49,7 +49,7 @@ final class BitcoinRateServiceImpl: BitcoinRateService {
     private func fetchBitcoinRate() {
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             guard let self = self, error == nil, let data = data else {
-                print("Failed to fetch Bitcoin rate: \(error?.localizedDescription ?? "Unknown error")")
+                Logger.logError("Failed to fetch Bitcoin rate: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
             do {
@@ -65,7 +65,7 @@ final class BitcoinRateServiceImpl: BitcoinRateService {
                     self.onRateUpdate?(rate)
                 }
             } catch {
-                print("Failed to parse Bitcoin rate: \(error)")
+                Logger.logError("Failed to parse Bitcoin rate: \(error)")
             }
         }
         task.resume()

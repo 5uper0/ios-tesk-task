@@ -1,44 +1,33 @@
 //
-//  CoreDataManager.swift
+//  MockCoreDataManager.swift
 //  TransactionsTestTask
 //
-//  Created by Oleh Veheria on 06.01.2025.
+//  Created by Oleh Veheria on 08.01.2025.
 //
 
-import CoreData
 import Foundation
+import CoreData
+@testable import TransactionsTestTask
 
-/// Protocol for CoreData operations
-protocol CoreDataManager {
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String)
-    func fetchTransactions(limit: Int?) -> [Transaction]
-    func saveBitcoinRate(rate: Double, timestamp: Date)
-    func fetchBitcoinRate() -> Double?
-}
-
-final class CoreDataManagerImpl: CoreDataManager {
-
-    // MARK: - Singleton Instance
-    static let shared = CoreDataManagerImpl()
-    private init() {}
-
-    // MARK: - Core Data Stack
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "TransactionsTestTask")
-        container.loadPersistentStores { _, error in
-            if let error = error as NSError? {
-                Logger.logError("Core Data Store Loading Failed: \(error), \(error.userInfo)")
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-        return container
-    }()
-
-    var context: NSManagedObjectContext {
+final class MockCoreDataManager: CoreDataManager {
+    private let persistentContainer: NSPersistentContainer
+    private var context: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
 
-    // MARK: - CRUD Operations
+    init() {
+        persistentContainer = NSPersistentContainer(name: "TransactionsTestTask")
+        let description = NSPersistentStoreDescription()
+        description.type = NSInMemoryStoreType // Use in-memory store for testing
+        persistentContainer.persistentStoreDescriptions = [description]
+
+        persistentContainer.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Failed to set up in-memory store: \(error)")
+            }
+        }
+    }
+
     func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String) {
         let transaction = Transaction(context: context)
         transaction.id = id
@@ -46,7 +35,6 @@ final class CoreDataManagerImpl: CoreDataManager {
         transaction.category = category
         transaction.date = date
         transaction.type = type
-
         saveContext()
     }
 
@@ -68,7 +56,6 @@ final class CoreDataManagerImpl: CoreDataManager {
         let bitcoinRate = BitcoinRate(context: context)
         bitcoinRate.rate = rate
         bitcoinRate.timestamp = timestamp
-
         saveContext()
     }
 
@@ -76,7 +63,6 @@ final class CoreDataManagerImpl: CoreDataManager {
         let fetchRequest: NSFetchRequest<BitcoinRate> = BitcoinRate.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
         fetchRequest.fetchLimit = 1
-
         do {
             return try context.fetch(fetchRequest).first?.rate
         } catch {
@@ -89,10 +75,8 @@ final class CoreDataManagerImpl: CoreDataManager {
         if context.hasChanges {
             do {
                 try context.save()
-                Logger.logDebug("Context saved successfully.")
             } catch {
-                let nserror = error as NSError
-                Logger.logError("Failed to save context: \(nserror), \(nserror.userInfo)")
+                Logger.logError("Failed to save context: \(error)")
             }
         }
     }
