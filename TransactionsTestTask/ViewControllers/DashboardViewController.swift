@@ -93,7 +93,8 @@ class DashboardViewController: UIViewController {
     }
 
     @objc private func didTapAddTransaction() {
-        // Handle add transaction action
+        let addTransactionVC = AddTransactionViewController()
+        navigationController?.pushViewController(addTransactionVC, animated: true)
     }
 }
 
