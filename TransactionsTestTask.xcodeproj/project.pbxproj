@@ -25,6 +25,15 @@
 		5FD83A982D2F13320074021B /* MockAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A972D2F13320074021B /* MockAnalyticsService.swift */; };
 		5FD83A9A2D2F13450074021B /* MockCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A992D2F13450074021B /* MockCoreDataManager.swift */; };
 		5FD83A9C2D2F13730074021B /* BitcoinRateServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A9B2D2F13730074021B /* BitcoinRateServiceTests.swift */; };
+		5FD83A9E2D2F1BA50074021B /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */; };
+		5FD83AA12D2F1CDB0074021B /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AA02D2F1CDB0074021B /* DashboardViewModel.swift */; };
+		5FD83AA32D2F1CE40074021B /* AddTransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AA22D2F1CE40074021B /* AddTransactionViewModel.swift */; };
+		5FD83AA72D2F1D9C0074021B /* TransactionCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AA62D2F1D9C0074021B /* TransactionCategory.swift */; };
+		5FD83AAB2D2F1EC30074021B /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AAA2D2F1EC30074021B /* TransactionType.swift */; };
+		5FD83AAD2D2F1FC50074021B /* BalanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AAC2D2F1FC50074021B /* BalanceView.swift */; };
+		5FD83AAF2D2F1FD20074021B /* TopUpButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AAE2D2F1FD20074021B /* TopUpButtonView.swift */; };
+		5FD83AB12D2F1FDD0074021B /* AddTransactionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB02D2F1FDD0074021B /* AddTransactionButtonView.swift */; };
+		5FD83AB32D2F1FEA0074021B /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB22D2F1FEA0074021B /* TransactionListView.swift */; };
 		5FFB762D2D2DB0E700629DCF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFB762C2D2DB0E700629DCF /* Logger.swift */; };
 		5FFB762F2D2DB11600629DCF /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFB762E2D2DB11600629DCF /* CoreDataManagerTests.swift */; };
 /* End PBXBuildFile section */
@@ -70,6 +79,15 @@
 		5FD83A972D2F13320074021B /* MockAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsService.swift; sourceTree = "<group>"; };
 		5FD83A992D2F13450074021B /* MockCoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataManager.swift; sourceTree = "<group>"; };
 		5FD83A9B2D2F13730074021B /* BitcoinRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinRateServiceTests.swift; sourceTree = "<group>"; };
+		5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
+		5FD83AA02D2F1CDB0074021B /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		5FD83AA22D2F1CE40074021B /* AddTransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewModel.swift; sourceTree = "<group>"; };
+		5FD83AA62D2F1D9C0074021B /* TransactionCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCategory.swift; sourceTree = "<group>"; };
+		5FD83AAA2D2F1EC30074021B /* TransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionType.swift; sourceTree = "<group>"; };
+		5FD83AAC2D2F1FC50074021B /* BalanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceView.swift; sourceTree = "<group>"; };
+		5FD83AAE2D2F1FD20074021B /* TopUpButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUpButtonView.swift; sourceTree = "<group>"; };
+		5FD83AB02D2F1FDD0074021B /* AddTransactionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionButtonView.swift; sourceTree = "<group>"; };
+		5FD83AB22D2F1FEA0074021B /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
 		5FFB762C2D2DB0E700629DCF /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		5FFB762E2D2DB11600629DCF /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,6 +187,8 @@
 		5F7624362D2C44CE00D00B45 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5FD83AAA2D2F1EC30074021B /* TransactionType.swift */,
+				5FD83AA62D2F1D9C0074021B /* TransactionCategory.swift */,
 				5F7624692D2C579800D00B45 /* BitcoinResponse.swift */,
 				1CA3B65E2D22B0F500176711 /* TransactionsTestTask.xcdatamodeld */,
 			);
@@ -187,6 +207,8 @@
 		5F76243A2D2C44FB00D00B45 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				5FD83AA22D2F1CE40074021B /* AddTransactionViewModel.swift */,
+				5FD83AA02D2F1CDB0074021B /* DashboardViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -209,6 +231,11 @@
 		5F7624462D2C468D00D00B45 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5FD83AB22D2F1FEA0074021B /* TransactionListView.swift */,
+				5FD83AB02D2F1FDD0074021B /* AddTransactionButtonView.swift */,
+				5FD83AAE2D2F1FD20074021B /* TopUpButtonView.swift */,
+				5FD83AAC2D2F1FC50074021B /* BalanceView.swift */,
+				5FD83A9F2D2F1BB70074021B /* Cells */,
 				5F7624432D2C468D00D00B45 /* LaunchScreen.storyboard */,
 				5F7624452D2C468D00D00B45 /* Main.storyboard */,
 			);
@@ -240,6 +267,14 @@
 				5FD83A972D2F13320074021B /* MockAnalyticsService.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		5FD83A9F2D2F1BB70074021B /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,19 +407,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FD83AAD2D2F1FC50074021B /* BalanceView.swift in Sources */,
+				5FD83A9E2D2F1BA50074021B /* TransactionCell.swift in Sources */,
 				0D1540612D22EF5D00D6D63F /* AnalyticsEvent.swift in Sources */,
 				0DF1D1432D22DCD8001626E7 /* PerformOnce.swift in Sources */,
+				5FD83AA32D2F1CE40074021B /* AddTransactionViewModel.swift in Sources */,
 				0DF1D1452D22DD06001626E7 /* BitcoinRateService.swift in Sources */,
 				5F76246A2D2C579800D00B45 /* BitcoinResponse.swift in Sources */,
+				5FD83AB12D2F1FDD0074021B /* AddTransactionButtonView.swift in Sources */,
 				5F76244F2D2C46D800D00B45 /* AddTransactionViewController.swift in Sources */,
+				5FD83AA12D2F1CDB0074021B /* DashboardViewModel.swift in Sources */,
 				0DF1D1472D22DD4A001626E7 /* AnalyticsService.swift in Sources */,
 				1CA3B65A2D22B0F500176711 /* DashboardViewController.swift in Sources */,
+				5FD83AAB2D2F1EC30074021B /* TransactionType.swift in Sources */,
 				1CA3B6562D22B0F500176711 /* AppDelegate.swift in Sources */,
 				1CA3B6582D22B0F500176711 /* SceneDelegate.swift in Sources */,
 				5FFB762D2D2DB0E700629DCF /* Logger.swift in Sources */,
 				1CA3B6602D22B0F500176711 /* TransactionsTestTask.xcdatamodeld in Sources */,
+				5FD83AA72D2F1D9C0074021B /* TransactionCategory.swift in Sources */,
 				0DF1D1402D22DC51001626E7 /* ServicesAssembler.swift in Sources */,
+				5FD83AB32D2F1FEA0074021B /* TransactionListView.swift in Sources */,
 				5F7624682D2C510E00D00B45 /* CoreDataManager.swift in Sources */,
+				5FD83AAF2D2F1FD20074021B /* TopUpButtonView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,90 +6,121 @@
 //
 
 import UIKit
+import Combine
 
 class DashboardViewController: UIViewController {
 
-    // MARK: - UI Elements
-    private let balanceLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.textAlignment = .center
-        return label
-    }()
-
-    private let topUpButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Top Up", for: .normal)
-        button.addTarget(self, action: #selector(didTapTopUp), for: .touchUpInside)
-        return button
-    }()
-
-    private let addTransactionButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Add Transaction", for: .normal)
-        button.addTarget(self, action: #selector(didTapAddTransaction), for: .touchUpInside)
-        return button
-    }()
-
-    private let transactionsTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
-
+    private let balanceView = BalanceView()
+    private let topUpButtonView = TopUpButtonView()
+    private let addTransactionButtonView = AddTransactionButtonView()
+    private let transactionListView = TransactionListView()
     private let exchangeRateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textAlignment = .right
+        label.textAlignment = .center
+        label.text = "1 BTC = $0.00"
         return label
     }()
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.alignment = .fill
+        return stackView
+    }()
 
-    // MARK: - Lifecycle
+    private var viewModel: DashboardViewModel!
+    private var cancellables = Set<AnyCancellable>()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupBindings()
+        setupObservers()
     }
 
-    // MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .white
-        view.addSubview(balanceLabel)
-        view.addSubview(topUpButton)
-        view.addSubview(addTransactionButton)
-        view.addSubview(transactionsTableView)
-        view.addSubview(exchangeRateLabel)
+        view.addSubview(stackView)
+        view.addSubview(transactionListView)
+
+        stackView.addArrangedSubview(balanceView)
+        stackView.addArrangedSubview(exchangeRateLabel)
+        stackView.addArrangedSubview(topUpButtonView)
+        stackView.addArrangedSubview(addTransactionButtonView)
+
+        balanceView.translatesAutoresizingMaskIntoConstraints = false
+        topUpButtonView.translatesAutoresizingMaskIntoConstraints = false
+        addTransactionButtonView.translatesAutoresizingMaskIntoConstraints = false
+        transactionListView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            balanceLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
-            topUpButton.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor, constant: 8),
-            topUpButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
-            addTransactionButton.topAnchor.constraint(equalTo: topUpButton.bottomAnchor, constant: 16),
-            addTransactionButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
-            transactionsTableView.topAnchor.constraint(equalTo: addTransactionButton.bottomAnchor, constant: 16),
-            transactionsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            transactionsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            transactionsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-
-            exchangeRateLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            exchangeRateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            transactionListView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
+            transactionListView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            transactionListView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            transactionListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
 
-        transactionsTableView.dataSource = self
-        transactionsTableView.delegate = self
-        transactionsTableView.register(UITableViewCell.self, forCellReuseIdentifier: "TransactionCell")
+        transactionListView.setDataSource(self)
+        transactionListView.setDelegate(self)
+        transactionListView.registerCell(TransactionCell.self, forCellReuseIdentifier: "TransactionCell")
+
+        topUpButtonView.setTarget(self, action: #selector(didTapTopUp), for: .touchUpInside)
+        addTransactionButtonView.setTarget(self, action: #selector(didTapAddTransaction), for: .touchUpInside)
     }
 
-    // MARK: - Actions
+    private func setupBindings() {
+        viewModel = DashboardViewModel(coreDataManager: CoreDataManagerImpl.shared, bitcoinRateService: BitcoinRateServiceImpl(analyticsService: AnalyticsServiceImpl(), coreDataManager: CoreDataManagerImpl.shared))
+
+        viewModel.$balance
+            .sink { [weak self] balance in
+                self?.balanceView.updateBalance(balance)
+            }
+            .store(in: &cancellables)
+
+        viewModel.$transactions
+            .sink { [weak self] _ in
+                self?.transactionListView.reloadData()
+            }
+            .store(in: &cancellables)
+
+        viewModel.$bitcoinRate
+            .sink { [weak self] rate in
+                self?.exchangeRateLabel.text = "1 BTC = $\(rate)"
+            }
+            .store(in: &cancellables)
+    }
+
+    private func setupObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTransactionAdded), name: .transactionAdded, object: nil)
+    }
+
+    @objc private func handleTransactionAdded() {
+        viewModel.fetchTransactions()
+        viewModel.updateBalance()
+    }
+
     @objc private func didTapTopUp() {
-        // Handle top-up action
+        let alertController = UIAlertController(title: "Top Up", message: "Enter amount in BTC", preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "Amount"
+            textField.keyboardType = .decimalPad
+        }
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { [weak self] _ in
+            if let amountText = alertController.textFields?.first?.text, let amount = Double(amountText) {
+                self?.viewModel.topUpBalance(amount: amount)
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
 
     @objc private func didTapAddTransaction() {
@@ -100,13 +131,19 @@ class DashboardViewController: UIViewController {
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension DashboardViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0 // Placeholder
+        return viewModel.transactions.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath)
-        cell.textLabel?.text = "Transaction \(indexPath.row + 1)" // Placeholder
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as! TransactionCell
+        let transaction = viewModel.transactions[indexPath.row]
+        let category = TransactionCategory(rawValue: transaction.category ?? "") ?? .other
+        cell.configure(with: category.rawValue, amount: transaction.amount, category: category.rawValue, date: transaction.date ?? Date())
         return cell
     }
 }

@@ -10,10 +10,11 @@ import Foundation
 
 /// Protocol for CoreData operations
 protocol CoreDataManager {
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String)
+    func saveTransaction(id: UUID, amount: Double, category: TransactionCategory, date: Date, type: TransactionType)
     func fetchTransactions(limit: Int?) -> [Transaction]
     func saveBitcoinRate(rate: Double, timestamp: Date)
     func fetchBitcoinRate() -> Double?
+    func getBalance() -> Double
 }
 
 final class CoreDataManagerImpl: CoreDataManager {
@@ -39,13 +40,13 @@ final class CoreDataManagerImpl: CoreDataManager {
     }
 
     // MARK: - CRUD Operations
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String) {
+    func saveTransaction(id: UUID, amount: Double, category: TransactionCategory, date: Date, type: TransactionType) {
         let transaction = Transaction(context: context)
         transaction.id = id
         transaction.amount = amount
-        transaction.category = category
+        transaction.category = category.rawValue
         transaction.date = date
-        transaction.type = type
+        transaction.type = type.rawValue
 
         saveContext()
     }
@@ -82,6 +83,20 @@ final class CoreDataManagerImpl: CoreDataManager {
         } catch {
             Logger.logError("Failed to fetch bitcoin rate: \(error)")
             return nil
+        }
+    }
+
+    func getBalance() -> Double {
+        let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        do {
+            let transactions = try context.fetch(fetchRequest)
+            let balance = transactions.reduce(0.0) { result, transaction in
+                return result + (transaction.type == TransactionType.income.rawValue ? transaction.amount : -transaction.amount)
+            }
+            return balance
+        } catch {
+            Logger.logError("Failed to fetch transactions for balance calculation: \(error)")
+            return 0.0
         }
     }
 

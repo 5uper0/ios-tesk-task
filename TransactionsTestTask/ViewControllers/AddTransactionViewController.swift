@@ -9,7 +9,6 @@ import UIKit
 
 class AddTransactionViewController: UIViewController {
 
-    // MARK: - UI Elements
     private let amountTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -19,12 +18,12 @@ class AddTransactionViewController: UIViewController {
         return textField
     }()
 
-    private let categorySegmentedControl: UISegmentedControl = {
-        let categories = ["Groceries", "Taxi", "Electronics", "Restaurant", "Other"]
-        let segmentedControl = UISegmentedControl(items: categories)
-        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.selectedSegmentIndex = 0
-        return segmentedControl
+    private let categoryTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44
+        return tableView
     }()
 
     private let addButton: UIButton = {
@@ -35,17 +34,19 @@ class AddTransactionViewController: UIViewController {
         return button
     }()
 
-    // MARK: - Lifecycle
+    private var viewModel: AddTransactionViewModel!
+    private var selectedCategory: TransactionCategory = .groceries
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        viewModel = AddTransactionViewModel(coreDataManager: CoreDataManagerImpl.shared)
     }
 
-    // MARK: - Setup UI
     private func setupUI() {
         view.backgroundColor = .white
         view.addSubview(amountTextField)
-        view.addSubview(categorySegmentedControl)
+        view.addSubview(categoryTableView)
         view.addSubview(addButton)
 
         NSLayoutConstraint.activate([
@@ -53,19 +54,40 @@ class AddTransactionViewController: UIViewController {
             amountTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             amountTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
 
-            categorySegmentedControl.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 16),
-            categorySegmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categorySegmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoryTableView.topAnchor.constraint(equalTo: amountTextField.bottomAnchor, constant: 16),
+            categoryTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoryTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoryTableView.heightAnchor.constraint(equalToConstant: 220),
 
-            addButton.topAnchor.constraint(equalTo: categorySegmentedControl.bottomAnchor, constant: 16),
+            addButton.topAnchor.constraint(equalTo: categoryTableView.bottomAnchor, constant: 16),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+
+        categoryTableView.dataSource = self
+        categoryTableView.delegate = self
+        categoryTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryCell")
     }
 
-    // MARK: - Actions
     @objc private func didTapAdd() {
-        // Handle add transaction action
-        // For now, just dismiss the view controller
+        guard let amountText = amountTextField.text, let amount = Double(amountText) else { return }
+        viewModel.addTransaction(amount: amount, category: selectedCategory)
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension AddTransactionViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return TransactionCategory.allCases.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let category = TransactionCategory.allCases[indexPath.row]
+        cell.textLabel?.text = category.rawValue
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedCategory = TransactionCategory.allCases[indexPath.row]
     }
 }
