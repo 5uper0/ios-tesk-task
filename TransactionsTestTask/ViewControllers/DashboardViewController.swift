@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class DashboardViewController: UIViewController {
+final class DashboardViewController: UIViewController {
 
     private let balanceView = BalanceView()
     private let topUpButtonView = TopUpButtonView()
@@ -18,7 +18,7 @@ class DashboardViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textAlignment = .center
+        label.textAlignment = .right
         label.text = "1 BTC = $0.00"
         return label
     }()
@@ -27,6 +27,14 @@ class DashboardViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 16
+        stackView.alignment = .fill
+        return stackView
+    }()
+    private let headerStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 4
         stackView.alignment = .fill
         return stackView
     }()
@@ -46,8 +54,10 @@ class DashboardViewController: UIViewController {
         view.addSubview(stackView)
         view.addSubview(transactionListView)
 
-        stackView.addArrangedSubview(balanceView)
-        stackView.addArrangedSubview(exchangeRateLabel)
+        headerStackView.addArrangedSubview(exchangeRateLabel)
+        headerStackView.addArrangedSubview(balanceView)
+
+        stackView.addArrangedSubview(headerStackView)
         stackView.addArrangedSubview(topUpButtonView)
         stackView.addArrangedSubview(addTransactionButtonView)
 
@@ -84,7 +94,7 @@ class DashboardViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        viewModel.$transactions
+        viewModel.$groupedTransactions
             .sink { [weak self] _ in
                 self?.transactionListView.reloadData()
             }
@@ -102,8 +112,7 @@ class DashboardViewController: UIViewController {
     }
 
     @objc private func handleTransactionAdded() {
-        viewModel.fetchTransactions()
-        viewModel.updateBalance()
+        viewModel.fetchTransactionsAndUpdateBalance()
     }
 
     @objc private func didTapTopUp() {
@@ -132,18 +141,46 @@ class DashboardViewController: UIViewController {
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension DashboardViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return viewModel.groupedTransactions.keys.count
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let sortedKeys = viewModel.groupedTransactions.keys.sorted(by: >)
+        return sortedKeys[safe: section]
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.transactions.count
+        let sortedKeys = viewModel.groupedTransactions.keys.sorted(by: >)
+        guard let key = sortedKeys[safe: section] else { return 0 }
+        return viewModel.groupedTransactions[key]?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as! TransactionCell
-        let transaction = viewModel.transactions[indexPath.row]
+        let sortedKeys = viewModel.groupedTransactions.keys.sorted(by: >)
+        guard let key = sortedKeys[safe: indexPath.section],
+              let transaction = viewModel.groupedTransactions[key]?[safe: indexPath.row] else {
+            return cell
+        }
         let category = TransactionCategory(rawValue: transaction.category ?? "") ?? .other
-        cell.configure(with: category.rawValue, amount: transaction.amount, category: category.rawValue, date: transaction.date ?? Date())
+        let title = transaction.type == TransactionType.income.rawValue ? "Income" : "Spending"
+        let sign = transaction.type == TransactionType.income.rawValue ? "+" : "-"
+        cell.configure(with: title, sign: sign, amount: transaction.amount, category: category.rawValue, date: transaction.date ?? Date())
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let sortedKeys = viewModel.groupedTransactions.keys.sorted(by: >)
+        guard let key = sortedKeys[safe: indexPath.section] else { return }
+        if indexPath.row == (viewModel.groupedTransactions[key]?.count ?? 0) - 1 && indexPath.section == sortedKeys.count - 1 {
+            viewModel.loadMoreTransactions()
+        }
+    }
+}
+
+// MARK: - Safe Array Access
+extension Collection {
+    subscript(safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }

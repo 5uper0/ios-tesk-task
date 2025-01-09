@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AddTransactionViewModel {
+final class AddTransactionViewModel {
 
     private let coreDataManager: CoreDataManager
 

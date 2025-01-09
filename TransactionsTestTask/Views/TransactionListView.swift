@@ -52,4 +52,8 @@ class TransactionListView: UIView {
     func reloadData() {
         tableView.reloadData()
     }
+
+    func insertRows(at indexPaths: [IndexPath]) {
+        tableView.insertRows(at: indexPaths, with: .automatic)
+    }
 }

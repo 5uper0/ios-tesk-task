@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TransactionCell: UITableViewCell {
+final class TransactionCell: UITableViewCell {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -63,7 +63,6 @@ class TransactionCell: UITableViewCell {
 
             categoryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            categoryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
 
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             dateLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 4),
@@ -71,9 +70,9 @@ class TransactionCell: UITableViewCell {
         ])
     }
 
-    func configure(with title: String, amount: Double, category: String, date: Date) {
+    func configure(with title: String, sign: String, amount: Double, category: String, date: Date) {
         titleLabel.text = title
-        amountLabel.text = "\(amount) BTC"
+        amountLabel.text = "\(sign) \(amount) BTC"
         categoryLabel.text = category
         dateLabel.text = DateFormatter.localizedString(from: date, dateStyle: .short, timeStyle: .short)
     }

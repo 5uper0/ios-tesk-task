@@ -7,8 +7,7 @@
 
 import UIKit
 
-class AddTransactionViewController: UIViewController {
-
+final class AddTransactionViewController: UIViewController {
     private let amountTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -30,7 +29,6 @@ class AddTransactionViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Add", for: .normal)
-        button.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
         return button
     }()
 
@@ -41,9 +39,11 @@ class AddTransactionViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         viewModel = AddTransactionViewModel(coreDataManager: CoreDataManagerImpl.shared)
+        addButton.addTarget(self, action: #selector(didTapAdd), for: .touchUpInside)
     }
 
     private func setupUI() {
+        title = "Add Transaction"
         view.backgroundColor = .white
         view.addSubview(amountTextField)
         view.addSubview(categoryTableView)
@@ -70,7 +70,11 @@ class AddTransactionViewController: UIViewController {
 
     @objc private func didTapAdd() {
         guard let amountText = amountTextField.text, let amount = Double(amountText) else { return }
+
+        // Post the notification ONLY from here or from ViewModel, not both
         viewModel.addTransaction(amount: amount, category: selectedCategory)
+        NotificationCenter.default.post(name: .transactionAdded, object: nil)
+
         navigationController?.popViewController(animated: true)
     }
 }
@@ -83,7 +87,7 @@ extension AddTransactionViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         let category = TransactionCategory.allCases[indexPath.row]
-        cell.textLabel?.text = category.rawValue
+        cell.textLabel?.text = category.rawValue.capitalized
         return cell
     }
 
