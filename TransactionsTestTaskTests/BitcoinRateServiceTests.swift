@@ -40,6 +40,27 @@ final class BitcoinRateServiceTests: XCTestCase {
             expectation.fulfill()
         }
 
+        // Mock URLSession to return a predefined response
+        let mockURLSession = MockURLSession()
+        mockURLSession.data = """
+        {
+            "time": {
+                "updated": "Jan 8, 2025 00:03:00 UTC",
+                "updatedISO": "2025-01-08T00:03:00+00:00"
+            },
+            "bpi": {
+                "USD": {
+                    "code": "USD",
+                    "rate": "45,000.5",
+                    "rate_float": 45000.5
+                }
+            }
+        }
+        """.data(using: .utf8)
+
+        // Inject the mock URLSession into the BitcoinRateService
+        bitcoinRateService.urlSession = mockURLSession
+
         // Act
         bitcoinRateService.startFetching(interval: 1)
 
@@ -57,5 +78,43 @@ final class BitcoinRateServiceTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(cachedRate, rate)
+    }
+
+    func testAnalyticsEventTracking() {
+        // Arrange
+        let expectation = self.expectation(description: "Track Analytics Event")
+        bitcoinRateService.onRateUpdate = { _ in
+            let events = self.mockAnalyticsService.getEvents(name: "bitcoin_rate_update", dateRange: nil)
+            XCTAssertEqual(events.count, 1)
+            XCTAssertEqual(events.first?.name, "bitcoin_rate_update")
+            expectation.fulfill()
+        }
+
+        // Mock URLSession to return a predefined response
+        let mockURLSession = MockURLSession()
+        mockURLSession.data = """
+        {
+            "time": {
+                "updated": "Jan 8, 2025 00:03:00 UTC",
+                "updatedISO": "2025-01-08T00:03:00+00:00"
+            },
+            "bpi": {
+                "USD": {
+                    "code": "USD",
+                    "rate": "45,000.5",
+                    "rate_float": 45000.5
+                }
+            }
+        }
+        """.data(using: .utf8)
+
+        // Inject the mock URLSession into the BitcoinRateService
+        bitcoinRateService.urlSession = mockURLSession
+
+        // Act
+        bitcoinRateService.startFetching(interval: 1)
+
+        // Assert
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }

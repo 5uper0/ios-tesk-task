@@ -27,17 +27,17 @@ final class CoreDataManagerTests: XCTestCase {
         // Arrange
         let transactionID = UUID()
         let amount = 100.0
-        let category = "Groceries"
+        let category = TransactionCategory.groceries.rawValue
         let date = Date()
-        let type = "Expense"
+        let type = TransactionType.expense.rawValue
 
         // Act
         mockCoreDataManager.saveTransaction(
             id: transactionID,
             amount: amount,
-            category: category,
+            category: .groceries,
             date: date,
-            type: type
+            type: .expense
         )
         let transactions = mockCoreDataManager.fetchTransactions()
 
@@ -66,17 +66,17 @@ final class CoreDataManagerTests: XCTestCase {
         let coreDataManager: CoreDataManager = CoreDataManagerImpl.shared
         let transactionID = UUID()
         let amount = 100.0
-        let category = "Groceries"
+        let category = TransactionCategory.groceries.rawValue
         let date = Date()
-        let type = "Expense"
+        let type = TransactionType.expense.rawValue
 
         // Act
         coreDataManager.saveTransaction(
             id: transactionID,
             amount: amount,
-            category: category,
+            category: .groceries,
             date: date,
-            type: type
+            type: .expense
         )
         let transactions = coreDataManager.fetchTransactions(limit: 1)
 
@@ -86,5 +86,35 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(transactions.first?.amount, amount)
         XCTAssertEqual(transactions.first?.category, category)
         XCTAssertEqual(transactions.first?.type, type)
+    }
+
+    func testGetBalance() {
+        // Arrange
+        let incomeTransactionID = UUID()
+        let expenseTransactionID = UUID()
+        let incomeAmount = 200.0
+        let expenseAmount = 50.0
+        let category = TransactionCategory.other.rawValue
+        let date = Date()
+
+        // Act
+        mockCoreDataManager.saveTransaction(
+            id: incomeTransactionID,
+            amount: incomeAmount,
+            category: .other,
+            date: date,
+            type: .income
+        )
+        mockCoreDataManager.saveTransaction(
+            id: expenseTransactionID,
+            amount: expenseAmount,
+            category: .other,
+            date: date,
+            type: .expense
+        )
+        let balance = mockCoreDataManager.getBalance()
+
+        // Assert
+        XCTAssertEqual(balance, incomeAmount - expenseAmount)
     }
 }

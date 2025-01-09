@@ -10,16 +10,24 @@ import Foundation
 
 /// Protocol for CoreData operations
 protocol CoreDataManager {
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String)
+    func saveTransaction(
+        id: UUID,
+        amount: Double,
+        category: TransactionCategory,
+        date: Date,
+        type: TransactionType
+    )
     func fetchTransactions(limit: Int?) -> [Transaction]
     func saveBitcoinRate(rate: Double, timestamp: Date)
     func fetchBitcoinRate() -> Double?
+    func getBalance() -> Double
 }
 
 final class CoreDataManagerImpl: CoreDataManager {
 
     // MARK: - Singleton Instance
     static let shared = CoreDataManagerImpl()
+
     private init() {}
 
     // MARK: - Core Data Stack
@@ -39,28 +47,60 @@ final class CoreDataManagerImpl: CoreDataManager {
     }
 
     // MARK: - CRUD Operations
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String) {
+    func saveContext() {
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            Logger.logError("Core Data save error: \(error)")
+        }
+    }
+
+    func saveTransaction(
+        id: UUID,
+        amount: Double,
+        category: TransactionCategory,
+        date: Date,
+        type: TransactionType
+    ) {
         let transaction = Transaction(context: context)
         transaction.id = id
         transaction.amount = amount
-        transaction.category = category
+        transaction.category = category.rawValue
         transaction.date = date
-        transaction.type = type
-
+        transaction.type = type.rawValue
         saveContext()
     }
 
-    func fetchTransactions(limit: Int? = nil) -> [Transaction] {
-        let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+    func fetchTransactions(limit: Int?) -> [Transaction] {
+        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         if let limit = limit {
-            fetchRequest.fetchLimit = limit
+            request.fetchLimit = limit
         }
         do {
-            return try context.fetch(fetchRequest)
+            return try context.fetch(request)
         } catch {
             Logger.logError("Failed to fetch transactions: \(error)")
             return []
+        }
+    }
+
+    func getBalance() -> Double {
+        // Tally up all 'income' minus 'spending' in the database
+        let request: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        do {
+            let transactions = try context.fetch(request)
+            let income = transactions
+                .filter { $0.type == TransactionType.income.rawValue }
+                .reduce(0) { $0 + $1.amount }
+            let spending = transactions
+                .filter { $0.type == TransactionType.expense.rawValue }
+                .reduce(0) { $0 + $1.amount }
+            return income - spending
+        } catch {
+            Logger.logError("Failed to fetch transactions for balance: \(error)")
+            return 0.0
         }
     }
 
@@ -68,7 +108,6 @@ final class CoreDataManagerImpl: CoreDataManager {
         let bitcoinRate = BitcoinRate(context: context)
         bitcoinRate.rate = rate
         bitcoinRate.timestamp = timestamp
-
         saveContext()
     }
 
@@ -76,24 +115,12 @@ final class CoreDataManagerImpl: CoreDataManager {
         let fetchRequest: NSFetchRequest<BitcoinRate> = BitcoinRate.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
         fetchRequest.fetchLimit = 1
-
+        
         do {
             return try context.fetch(fetchRequest).first?.rate
         } catch {
             Logger.logError("Failed to fetch bitcoin rate: \(error)")
             return nil
-        }
-    }
-
-    private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-                Logger.logDebug("Context saved successfully.")
-            } catch {
-                let nserror = error as NSError
-                Logger.logError("Failed to save context: \(nserror), \(nserror.userInfo)")
-            }
         }
     }
 }
