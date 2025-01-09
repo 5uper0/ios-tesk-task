@@ -28,13 +28,13 @@ final class MockCoreDataManager: CoreDataManager {
         }
     }
 
-    func saveTransaction(id: UUID, amount: Double, category: String, date: Date, type: String) {
+    func saveTransaction(id: UUID, amount: Double, category: TransactionCategory, date: Date, type: TransactionType) {
         let transaction = Transaction(context: context)
         transaction.id = id
         transaction.amount = amount
-        transaction.category = category
+        transaction.category = category.rawValue
         transaction.date = date
-        transaction.type = type
+        transaction.type = type.rawValue
         saveContext()
     }
 
@@ -68,6 +68,23 @@ final class MockCoreDataManager: CoreDataManager {
         } catch {
             Logger.logError("Failed to fetch bitcoin rate: \(error)")
             return nil
+        }
+    }
+
+    func getBalance() -> Double {
+        let fetchRequest: NSFetchRequest<Transaction> = Transaction.fetchRequest()
+        do {
+            let transactions = try context.fetch(fetchRequest)
+            let income = transactions
+                .filter { $0.type == TransactionType.income.rawValue }
+                .reduce(0) { $0 + $1.amount }
+            let spending = transactions
+                .filter { $0.type == TransactionType.expense.rawValue }
+                .reduce(0) { $0 + $1.amount }
+            return income - spending
+        } catch {
+            Logger.logError("Failed to fetch transactions for balance: \(error)")
+            return 0.0
         }
     }
 

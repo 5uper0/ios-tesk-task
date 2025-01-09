@@ -22,6 +22,7 @@ final class BitcoinRateServiceImpl: BitcoinRateService {
     private let analyticsService: AnalyticsService
     private let coreDataManager: CoreDataManager
     private var lastRate: Double?
+    var urlSession: URLSession = .shared
 
     // MARK: - Init
     init(analyticsService: AnalyticsService, coreDataManager: CoreDataManager) {
@@ -47,7 +48,7 @@ final class BitcoinRateServiceImpl: BitcoinRateService {
     }
 
     private func fetchBitcoinRate() {
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+        let task = urlSession.dataTask(with: url) { [weak self] data, response, error in
             guard let self = self, error == nil, let data = data else {
                 Logger.logError("Failed to fetch Bitcoin rate: \(error?.localizedDescription ?? "Unknown error")")
                 return

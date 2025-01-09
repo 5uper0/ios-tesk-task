@@ -17,13 +17,10 @@
 		1CA3B65A2D22B0F500176711 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA3B6592D22B0F500176711 /* DashboardViewController.swift */; };
 		1CA3B6602D22B0F500176711 /* TransactionsTestTask.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA3B65E2D22B0F500176711 /* TransactionsTestTask.xcdatamodeld */; };
 		1CA3B6622D22B0F600176711 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CA3B6612D22B0F600176711 /* Assets.xcassets */; };
-		1CA3B6702D22B0F600176711 /* TransactionsTestTaskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA3B66F2D22B0F600176711 /* TransactionsTestTaskTests.swift */; };
 		5F76244F2D2C46D800D00B45 /* AddTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F76244E2D2C46CD00D00B45 /* AddTransactionViewController.swift */; };
 		5F7624622D2C503D00D00B45 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5F7624452D2C468D00D00B45 /* Main.storyboard */; };
 		5F7624682D2C510E00D00B45 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7624672D2C510E00D00B45 /* CoreDataManager.swift */; };
 		5F76246A2D2C579800D00B45 /* BitcoinResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7624692D2C579800D00B45 /* BitcoinResponse.swift */; };
-		5FD83A982D2F13320074021B /* MockAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A972D2F13320074021B /* MockAnalyticsService.swift */; };
-		5FD83A9A2D2F13450074021B /* MockCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A992D2F13450074021B /* MockCoreDataManager.swift */; };
 		5FD83A9C2D2F13730074021B /* BitcoinRateServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A9B2D2F13730074021B /* BitcoinRateServiceTests.swift */; };
 		5FD83A9E2D2F1BA50074021B /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */; };
 		5FD83AA12D2F1CDB0074021B /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AA02D2F1CDB0074021B /* DashboardViewModel.swift */; };
@@ -34,6 +31,10 @@
 		5FD83AAF2D2F1FD20074021B /* TopUpButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AAE2D2F1FD20074021B /* TopUpButtonView.swift */; };
 		5FD83AB12D2F1FDD0074021B /* AddTransactionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB02D2F1FDD0074021B /* AddTransactionButtonView.swift */; };
 		5FD83AB32D2F1FEA0074021B /* TransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB22D2F1FEA0074021B /* TransactionListView.swift */; };
+		5FD83ABB2D2FE4860074021B /* MockCoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB92D2FE4860074021B /* MockCoreDataManager.swift */; };
+		5FD83ABC2D2FE4860074021B /* MockAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83AB82D2FE4860074021B /* MockAnalyticsService.swift */; };
+		5FD83ABE2D2FE4BD0074021B /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83ABD2D2FE4BD0074021B /* MockURLSession.swift */; };
+		5FD83AC02D2FE4D80074021B /* MockURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD83ABF2D2FE4D80074021B /* MockURLSessionDataTask.swift */; };
 		5FFB762D2D2DB0E700629DCF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFB762C2D2DB0E700629DCF /* Logger.swift */; };
 		5FFB762F2D2DB11600629DCF /* CoreDataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFB762E2D2DB11600629DCF /* CoreDataManagerTests.swift */; };
 /* End PBXBuildFile section */
@@ -69,15 +70,12 @@
 		1CA3B6612D22B0F600176711 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CA3B6662D22B0F600176711 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CA3B66B2D22B0F600176711 /* TransactionsTestTaskTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TransactionsTestTaskTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1CA3B66F2D22B0F600176711 /* TransactionsTestTaskTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTestTaskTests.swift; sourceTree = "<group>"; };
 		1CA3B6752D22B0F600176711 /* TransactionsTestTaskUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TransactionsTestTaskUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F7624422D2C468D00D00B45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5F7624442D2C468D00D00B45 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5F76244E2D2C46CD00D00B45 /* AddTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionViewController.swift; sourceTree = "<group>"; };
 		5F7624672D2C510E00D00B45 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		5F7624692D2C579800D00B45 /* BitcoinResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinResponse.swift; sourceTree = "<group>"; };
-		5FD83A972D2F13320074021B /* MockAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsService.swift; sourceTree = "<group>"; };
-		5FD83A992D2F13450074021B /* MockCoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataManager.swift; sourceTree = "<group>"; };
 		5FD83A9B2D2F13730074021B /* BitcoinRateServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitcoinRateServiceTests.swift; sourceTree = "<group>"; };
 		5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
 		5FD83AA02D2F1CDB0074021B /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
@@ -88,6 +86,10 @@
 		5FD83AAE2D2F1FD20074021B /* TopUpButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUpButtonView.swift; sourceTree = "<group>"; };
 		5FD83AB02D2F1FDD0074021B /* AddTransactionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionButtonView.swift; sourceTree = "<group>"; };
 		5FD83AB22D2F1FEA0074021B /* TransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListView.swift; sourceTree = "<group>"; };
+		5FD83AB82D2FE4860074021B /* MockAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsService.swift; sourceTree = "<group>"; };
+		5FD83AB92D2FE4860074021B /* MockCoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataManager.swift; sourceTree = "<group>"; };
+		5FD83ABD2D2FE4BD0074021B /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		5FD83ABF2D2FE4D80074021B /* MockURLSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionDataTask.swift; sourceTree = "<group>"; };
 		5FFB762C2D2DB0E700629DCF /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		5FFB762E2D2DB11600629DCF /* CoreDataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManagerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -178,8 +180,7 @@
 			children = (
 				5FD83A9B2D2F13730074021B /* BitcoinRateServiceTests.swift */,
 				5FFB762E2D2DB11600629DCF /* CoreDataManagerTests.swift */,
-				1CA3B66F2D22B0F600176711 /* TransactionsTestTaskTests.swift */,
-				5FD83A962D2F13250074021B /* Mocks */,
+				5FD83ABA2D2FE4860074021B /* Mocks */,
 			);
 			path = TransactionsTestTaskTests;
 			sourceTree = "<group>";
@@ -260,21 +261,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		5FD83A962D2F13250074021B /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				5FD83A992D2F13450074021B /* MockCoreDataManager.swift */,
-				5FD83A972D2F13320074021B /* MockAnalyticsService.swift */,
-			);
-			path = Mocks;
-			sourceTree = "<group>";
-		};
 		5FD83A9F2D2F1BB70074021B /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				5FD83A9D2D2F1BA50074021B /* TransactionCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		5FD83ABA2D2FE4860074021B /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				5FD83ABF2D2FE4D80074021B /* MockURLSessionDataTask.swift */,
+				5FD83ABD2D2FE4BD0074021B /* MockURLSession.swift */,
+				5FD83AB82D2FE4860074021B /* MockAnalyticsService.swift */,
+				5FD83AB92D2FE4860074021B /* MockCoreDataManager.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -436,11 +439,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FD83A9A2D2F13450074021B /* MockCoreDataManager.swift in Sources */,
 				5FD83A9C2D2F13730074021B /* BitcoinRateServiceTests.swift in Sources */,
 				5FFB762F2D2DB11600629DCF /* CoreDataManagerTests.swift in Sources */,
-				1CA3B6702D22B0F600176711 /* TransactionsTestTaskTests.swift in Sources */,
-				5FD83A982D2F13320074021B /* MockAnalyticsService.swift in Sources */,
+				5FD83ABB2D2FE4860074021B /* MockCoreDataManager.swift in Sources */,
+				5FD83AC02D2FE4D80074021B /* MockURLSessionDataTask.swift in Sources */,
+				5FD83ABE2D2FE4BD0074021B /* MockURLSession.swift in Sources */,
+				5FD83ABC2D2FE4860074021B /* MockAnalyticsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
